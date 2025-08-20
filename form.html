@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BRAND825</title>
+<body>
+  
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background:rgb(255, 255, 255);
+    }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    /* Popup */
+    .popup {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      width: 350px;
+      max-width: 90%;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .popup h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
+
+    .popup h3 {
+      margin: 0 0 15px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .popup p {
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    /* Input */
+    .popup input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    /* Checkbox */
+    .popup label {
+      display: flex;
+      align-items: flex-start;
+      font-size: 12px;
+      text-align: left;
+      margin-bottom: 15px;
+      cursor: pointer;
+    }
+
+    .popup label input {
+      margin-right: 8px;
+      margin-top: 2px;
+    }
+
+    /* Button */
+    .popup button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #000;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .popup button:hover {
+      background: #333;
+    }
+
+    /* Close button */
+    .close-btn {
+      position: absolute;
+      top: 10px; right: 12px;
+      font-size: 22px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<!-- Overlay & Popup -->
+<div class="overlay" id="overlay">
+  <div class="popup">
+    <span class="close-btn" onclick="closePopup()">&times;</span>
+    <h2>BRAND825</h2>
+    <h3>Get 10% Off<br>Next Entrée</h3>
+    <p>Enter your phone number to receive exclusive offers and promotions via text message.</p>
+    
+    <form id="popupForm" action="https://formspree.io/f/xkgzlpvg" method="POST">
+      <input type="text" name="phone" id="phone" placeholder="Phone number">
+      <label>
+        <input type="checkbox" id="agree">
+        I agree to receive recurring automated promotional and personalized marketing text messages 
+        (e.g., cart reminders) from BRAND825 at the mobile number used when signing up. Consent is 
+        not a condition of purchase. Message & data rates apply. Reply HELP for help and STOP to cancel. 
+        View <a href="#">Terms & Privacy</a>
+      </label>
+      <button type="submit">SUBSCRIBE</button>
+    </form>
+
+  </div>
+</div>
+
+<script>
+  function openPopup() {
+    document.getElementById("overlay").style.display = "flex";
+  }
+
+  function closePopup() {
+    document.getElementById("overlay").style.display = "none";
+    localStorage.setItem("popupClosed", "false");
+  }
+
+  // Handle Formspree submission without redirect
+  document.getElementById("popupForm").addEventListener("submit", async function(event) {
+    event.preventDefault(); // stop normal redirect
+
+    const phone = document.getElementById("phone").value.trim();
+    const agree = document.getElementById("agree").checked;
+
+    if (!phone) {
+      alert("Please enter your phone number.");
+      return;
+    }
+
+    if (!agree) {
+      alert("You must agree to the terms before subscribing.");
+      return;
+    }
+
+    try {
+      const response = await fetch(this.action, {
+        method: "POST",
+        body: new FormData(this),
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.ok) {
+        alert("✅ Subscription successful! Thanks for joining.");
+        localStorage.setItem("popupClosed", "true");
+        closePopup();
+      } else {
+        alert("❌ Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      alert("⚠️ Network error. Please try again later.");
+    }
+  });
+
+  // Auto open popup after 5 seconds unless closed before
+  window.onload = function() {
+    if (!localStorage.getItem("")) {
+      setTimeout(openPopup, 5000);
+    }
+  };
+</script>
+
+
+</body>
+</html>
